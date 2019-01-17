@@ -1,0 +1,64 @@
+#!/usr/bin/env python3
+
+import urllib.request
+import datetime
+from bs4 import BeautifulSoup
+
+today = datetime.datetime.today().weekday()
+
+akb_url = 'https://www1.bio.ku.dk/akb/kantine/menuoversigt/'
+biocenter_url = 'https://www.biocenter.ku.dk/kantine/menuoversigt/'
+
+def get_food(url):
+    try:
+        html = urllib.request.urlopen(url).read()
+        soup = BeautifulSoup(html, 'html.parser')
+        interesting_rows = soup.find(id='content').table.find_all('tr')[2:]
+        food_good = interesting_rows[today*6+2].td.next_sibling.get_text()
+        food_bad = interesting_rows[today*6+8].td.next_sibling.get_text()
+        return (food_good, food_bad)
+    except:
+        return ('NaN', 'NaN')
+
+(biocenter_good, biocenter_bad) = get_food(biocenter_url)
+(akb_good, akb_bad) = get_food(akb_url)
+
+html = """
+<!doctype html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="utf-8">
+    <style type="text/css">
+body {{
+  font-size: 100px;
+}}
+table {{
+  border-collapse: separate;
+  border-spacing: 50px 0;
+}}
+td {{
+  padding: 20px 0;
+}}
+body {{
+  background-color: black;
+  color: white;
+}}
+    </style>
+  </head>
+  <body>
+<table>
+<tr><td class='canteen'>BIOCENTER</td><td>{}</td>
+<tr><td></td><td>{}</td>
+<tr><td class='canteen'>AKB</td><td>{}</td>
+<tr><td></td><td>{}</td>
+</table>
+  </body>
+</html>
+""".format(biocenter_good, biocenter_bad, akb_good, akb_bad)
+
+html_file = "/tmp/sulten.html"
+f = open(html_file, "w")
+f.write(html)
+print(html_file)
+
