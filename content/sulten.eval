@@ -15,7 +15,7 @@ def get_food(url):
         soup = BeautifulSoup(html, 'html.parser')
         interesting_rows = soup.find(id='content').table.find_all('tr')[2:]
         food_good = interesting_rows[today*6+2].td.next_sibling.get_text()
-        food_bad = interesting_rows[today*6+8].td.next_sibling.get_text()
+        food_bad = interesting_rows[today*6+4].td.next_sibling.get_text()
         return (food_good, food_bad)
     except:
         return ('NaN', 'NaN')
