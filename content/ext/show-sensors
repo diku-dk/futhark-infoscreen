@@ -1,0 +1,7 @@
+#!/bin/sh
+
+echo
+sensors -A \
+    | tr $'\n' ';' \
+    | sed -E -e 's/-0;temp1:/: /g' -e 's/;;/\n/g' -e 's/ +/ /g' \
+    | sed -E -e 's/^/  /'
