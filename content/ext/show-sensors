@@ -1,9 +1,15 @@
 #!/bin/sh
 
+indent() {
+    n="$1"
+    space="$(dd status=none if=/dev/zero bs=1 count=$n | sed -E 's/./ /g')"
+    sed -E -e "s/^/$space/"
+}
+
 echo
-toilet -f pagga sensors
+toilet -f pagga sensors | indent 6
 echo
 sensors -A \
     | tr $'\n' ';' \
     | sed -E -e 's/-0;temp1:/: /g' -e 's/;;/\n/g' -e 's/-virtual//g' -e 's/ +/ /g'  \
-    | sed -E -e 's/^/   /'
+    | indent 3
