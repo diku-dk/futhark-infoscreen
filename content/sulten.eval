@@ -9,19 +9,20 @@ today = datetime.datetime.today().weekday()
 akb_url = 'https://www1.bio.ku.dk/akb/kantine/menuoversigt/'
 biocenter_url = 'https://www.biocenter.ku.dk/kantine/menuoversigt/'
 
-def get_food(url):
+def get_food(offset, url):
     try:
         html = urllib.request.urlopen(url).read()
         soup = BeautifulSoup(html, 'html.parser')
-        interesting_rows = soup.find(id='content').table.find_all('tr')[2:]
+        interesting_rows = soup.find(id='content').table.find_all('tr')[offset:]
+
         food_good = interesting_rows[today*6+2].td.next_sibling.get_text()
         food_bad = interesting_rows[today*6+4].td.next_sibling.get_text()
         return (food_good, food_bad)
     except:
         return ('NaN', 'NaN')
 
-(biocenter_good, biocenter_bad) = get_food(biocenter_url)
-(akb_good, akb_bad) = get_food(akb_url)
+(biocenter_good, biocenter_bad) = get_food(2, biocenter_url)
+(akb_good, akb_bad) = get_food(1, akb_url)
 
 html = """
 <!doctype html>
