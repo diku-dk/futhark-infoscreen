@@ -1,0 +1,1 @@
+show_when: now.hour < 13
